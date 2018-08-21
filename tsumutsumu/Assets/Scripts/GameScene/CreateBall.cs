@@ -85,6 +85,7 @@ public class CreateBall : MonoBehaviour {
 				//消去するリストに3個以上ボールがない時
 				for (int j = 0; j < length; j++) {
 					GameObject listedBall = removableBallList [j];
+					ChangeColor (listedBall, 1.0f); //アルファ値を戻す
 					listedBall.name = listedBall.name.Substring (1, 5);
 				}
 			}
@@ -113,6 +114,7 @@ public class CreateBall : MonoBehaviour {
 
 	void PushToList(GameObject obj){
 		lastBall = obj; //直前にドラッグしたボールに現在のボールを追加
+		ChangeColor(obj, 0.5f); //現在のボールを半透明にする
 		removableBallList.Add(obj); //消去するリストに現在のボールを追加
 		obj.name = "_" + obj.name; //区別するため、消去するボールのリストに加えたボールの名前を変更
 	}
@@ -120,5 +122,12 @@ public class CreateBall : MonoBehaviour {
 	Collider2D GetCurrentHitCollider(){
 		RaycastHit2D hit = Physics2D.Raycast (Camera.main.ScreenToWorldPoint (Input.mousePosition), Vector2.zero);
 		return hit.collider;
+	}
+
+	private void ChangeColor(GameObject obj, float transparency){
+
+		Color originalColor = obj.GetComponent<SpriteRenderer> ().color;
+		obj.GetComponent<SpriteRenderer> ().color = new Color (originalColor.r, originalColor.g, originalColor.b, transparency);
+	
 	}
 }
