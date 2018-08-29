@@ -14,6 +14,7 @@ public class CreateBall : MonoBehaviour {
 	public Sprite[] ballSprite = new Sprite[5]; //ボールの画像
 
 	//メンバ変数
+	private GameObject canvasGame; //CanvasGame
 	private GameObject firstBall; //最初にタッチしたボール
 	private GameObject lastBall; //直前にドラッグしたボール
 	private List<GameObject> removableBallList; //消去するボールのリスト
@@ -28,6 +29,7 @@ public class CreateBall : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		canvasGame = GameObject.Find ("CanvasGame");
 		countDownText = countDown.GetComponent<Text>(); //タイマーを取得
 		timerText = timer.GetComponent<Text>(); //制限時間タイマー
 		scoreText = score.GetComponent<Text>(); //scoreTextを設定
@@ -68,17 +70,19 @@ public class CreateBall : MonoBehaviour {
 			
 			//ボールのプレハブを読み込み
 			GameObject ball = (GameObject)Instantiate (ballPrefab); 
+			ball.transform.SetParent (canvasGame.transform, false);
 
 			//ボールの座標と角度をランダムに設定
 			ball.transform.position = new Vector3 (
-				Random.Range (-2.0f, 2.0f), 7, 0);
+				Random.Range (-2.0f, 2.0f), 4, 0);
 			ball.transform.eulerAngles = new Vector3 (
 				0, 0, Random.Range (-40, 40));
 
 			//ボールの画像のidをランダムに設定し名前と画像をidに合わせて変更
 			int spriteId = Random.Range (0, 5);
 			ball.name = "Ball" + spriteId;
-			ball.GetComponent<SpriteRenderer> ().sprite = ballSprite [spriteId];
+			//ball.GetComponent<SpriteRenderer> ().sprite = ballSprite [spriteId];
+			ball.GetComponent<Image>().sprite = ballSprite [spriteId];
 
 			//次のボールを生成するまで一定時間待つ
 			yield return new WaitForSeconds (0.05f);  
@@ -175,8 +179,8 @@ public class CreateBall : MonoBehaviour {
 
 	private void ChangeColor(GameObject obj, float transparency){
 
-		Color originalColor = obj.GetComponent<SpriteRenderer> ().color;
-		obj.GetComponent<SpriteRenderer> ().color = new Color (originalColor.r, originalColor.g, originalColor.b, transparency);
+		Color originalColor = obj.GetComponent<Image> ().color;
+		obj.GetComponent<Image>().color = new Color (originalColor.r, originalColor.g, originalColor.b, transparency);
 	
 	}
 
